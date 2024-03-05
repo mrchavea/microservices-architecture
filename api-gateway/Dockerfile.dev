@@ -1,0 +1,11 @@
+FROM node:16-alpine
+WORKDIR /apps/gateway
+
+COPY package*.json ./
+RUN npm install && npm cache clean --force
+
+COPY . .
+
+EXPOSE ${PORT}
+
+CMD ["npm", "run", "dev"]

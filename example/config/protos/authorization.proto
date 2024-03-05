@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.authorization";
+option java_outer_classname = "AuthorizationProto";
+option objc_class_prefix = "HLW";
+
+package authorization;
+
+// The greeting service definition.
+service Authorization {
+  // Sends a greeting
+  rpc checkAuthorization (AuthorizedRequest) returns (AuthorizedReply) {}
+
+}
+
+// The request message containing the user's name.
+message AuthorizedRequest {
+  string apiName = 1;
+  string token = 2;
+}
+
+// The response message containing the greetings
+message AuthorizedReply {
+  string message = 1;
+}

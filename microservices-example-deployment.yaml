@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.32.0 (765fde254)
+  labels:
+    io.kompose.service: microservices-example
+  name: microservices-example
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: microservices-example
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.32.0 (765fde254)
+      labels:
+        io.kompose.network/api-gateway-my-network: "true"
+        io.kompose.service: microservices-example
+    spec:
+      containers:
+        - image: microservices-example:latest
+          name: microservices-example
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3001
+              hostPort: 3001
+              protocol: TCP
+      restartPolicy: Always

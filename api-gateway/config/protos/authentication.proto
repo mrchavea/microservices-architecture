@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.authentication";
+option java_outer_classname = "AuthenticationProto";
+option objc_class_prefix = "HLW";
+
+package authentication;
+
+// The greeting service definition.
+service Authentication {
+  // Sends a greeting
+  rpc getAccessToken (TokenRequest) returns (TokenReply) {}
+  rpc verifyToken (VerificationRequest) returns (VerificationReply) {}
+  rpc refreshToken (RefreshRequest) returns (RefreshReply) {}
+}
+
+// The request message containing the user's name.
+message TokenRequest {
+  string username = 1;
+}
+
+// The response message containing the greetings
+message TokenReply {
+  string access_token = 1;
+  string refresh_token = 2;
+  int32 status = 3;
+}
+
+message VerificationRequest {
+  string access_token = 1;
+}
+
+message VerificationReply {
+  string username = 1;
+  int32 status = 2;
+}
+
+message RefreshRequest {
+  string refresh_token = 1;
+}
+
+message RefreshReply {
+  string access_token = 1;
+  int32 status = 2;
+}
+
