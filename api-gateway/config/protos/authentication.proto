@@ -7,41 +7,68 @@ option objc_class_prefix = "HLW";
 
 package authentication;
 
-// The greeting service definition.
-service Authentication {
-  // Sends a greeting
-  rpc getAccessToken (TokenRequest) returns (TokenReply) {}
-  rpc verifyToken (VerificationRequest) returns (VerificationReply) {}
+service Token {
   rpc refreshToken (RefreshRequest) returns (RefreshReply) {}
 }
 
-// The request message containing the user's name.
-message TokenRequest {
-  string username = 1;
+service User {
+  rpc registerUser (SignUpRequest) returns (SignUpRequest) {}
+  rpc authenticateUser (SignInRequest) returns (SignInReply) {}
+  rpc logOutUser (LogOutRequest) returns (LogOutReply) {}
 }
 
-// The response message containing the greetings
-message TokenReply {
-  string access_token = 1;
-  string refresh_token = 2;
-  int32 status = 3;
+//General: Status message
+message Status {
+  int32 code = 1;
+  optional string error = 2;
 }
 
-message VerificationRequest {
-  string access_token = 1;
-}
-
-message VerificationReply {
-  string username = 1;
-  int32 status = 2;
-}
-
+//Token
 message RefreshRequest {
   string refresh_token = 1;
 }
 
 message RefreshReply {
-  string access_token = 1;
-  int32 status = 2;
+  Status status = 1;
+  string access_token = 2;
 }
+
+//User
+message SignUpRequest {
+  string username = 1;
+  string email = 2;
+  string name = 3;
+  string password = 4;
+  string client_id = 5;
+}
+
+message SignUpReply {
+  Status status = 1;
+  string name = 2;
+  string email = 3;
+  string username = 4;
+  string access_token = 5;
+  string refresh_token = 6;
+}
+
+message SignInRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignInReply {
+  Status status = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+}
+
+message LogOutRequest {
+  string email = 1;
+}
+
+message LogOutReply {
+  Status status = 1;
+}
+
+
 

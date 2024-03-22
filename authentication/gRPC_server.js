@@ -4,8 +4,8 @@ const {
   authenticateUser,
   verifyJWT,
   getRefreshToken
-} = require("./domain/repositories/UserRepository");
-const database = require("./infraestructure/database");
+} = require("./repositories/UserRepository");
+const database = require("./database/mongoose/database");
 
 const PORT = process.env.PORT || 50051;
 

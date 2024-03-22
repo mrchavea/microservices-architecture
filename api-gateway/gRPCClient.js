@@ -23,7 +23,7 @@ if (argv.target) {
 } else {
   target = "microservices-authentication:50051";
 }
-var client = new authentication_proto.Authentication(
+var client = new authentication_proto.User(
   target,
   grpc.credentials.createInsecure()
 );
