@@ -1,5 +1,6 @@
-import { TokenDto } from "../../domain";
+import { CustomError, RefreshAccessToken, TokenDto, ValidateAccessToken } from "../../domain";
 import { TokenRepository } from "../../domain/repositories/token.repository";
+import { TOKEN_TYPE } from "../../helpers/enums";
 
 type gRPCFunction = (call:any, callback:any) => void
 
@@ -7,26 +8,45 @@ export class TokengRPCController{
 
     constructor(private readonly tokenRepository: TokenRepository){
     }
+    
+    private handleError = ( error: unknown, callback: any ) => {
+        if ( error instanceof CustomError ) {
+            return callback(null, { status: 
+                {code: error.statusCode,
+                    error: error.message}
+                })
+            }
 
-    //No need to implement that call. It should be called logInUser instead
-    // public generateAccessToken:gRPCFunction = async (call, callback) => {
-    //     const {} = call
-    //     const token = this.tokenRepository.generateAccessToken()
-    // }
-
-    // public getAccessToken:gRPCFunction = async (call, callback) => {
-    //     const [error, ]
-    // }
-
-    public verifyToken:gRPCFunction = async (call, callback) => {
-
+        return callback(null, { status: 
+            {code: 500,
+             error: 'Internal Server Error'}
+        })
     }
 
+
+    public validateToken:gRPCFunction = async (call, callback) => {
+        const {token} = call.request
+        try {
+            new ValidateAccessToken().execute(token)
+            .then(tokenData => callback(null, { status: {code: 200}, user_id: tokenData.user_id}, ))
+            .catch(err => this.handleError(err, callback))
+        } catch (err) {
+            this.handleError(err, callback)
+        }
+    }
+
+
     public refreshToken:gRPCFunction = async (call, callback) => {
-        const [error, tokenDto] = TokenDto.makeTokenDto(call?.request?.access_token, "REFRESH_TOKEN")
-        if(error) callback(null, {access_token: null, status: 0})
-        this.tokenRepository.generateRefreshToken(tokenDto!)
-            .then(token => callback(null, { access_token: token.value, status: 1 }))
-            .catch(err => callback(null, {access_token: null, status: 0}))
+        const {refresh_token} = call.request
+        try {
+            const [error, tokenDto] = await TokenDto.makeTokenDto(refresh_token, TOKEN_TYPE.REFRESH_TOKEN)
+            if(error) throw CustomError.badRequest(error)
+            new RefreshAccessToken(this.tokenRepository).execute(tokenDto!)
+            .then(generatedToken => callback(null, { status: {code: 200}, access_token: generatedToken.access_token, acces_token_expiration:generatedToken.access_token_expiration}))
+            .catch(err => this.handleError(err, callback))
+        } catch (err) {
+            this.handleError(err, callback)
+
+        }
     }
 }

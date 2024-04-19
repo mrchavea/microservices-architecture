@@ -5,14 +5,11 @@ import { gRPC_Server } from "./presentation/gRPC/gRPC.server";
 import { gRPCServices } from "./presentation/gRPC/gRPC.services";
 
 const PORT = process.env.PORT || 50051;
+const DB_HOST = process.env.DATABASE_HOST || "localhost";
 const DB_PORT = process.env.DATABASE_PORT || "27017";
-const DB_URL = process.env.DATABASE_HOST || `mongodb://localhost:${DB_PORT}`
 const DB_NAME = 'authentication'
 
-let options = {
-    PROTO_NAME: 'authentication',
-    PORT: Number(PORT),
-};
+const mongodbConnection = `mongodb://${DB_HOST}:${DB_PORT}`;
 
 const services = gRPCServices.services;
 
@@ -23,14 +20,19 @@ const services = gRPCServices.services;
 
 async function main ()  {
     try {
+        
         //Ajv validator instance (all schemas compiled once in initialization)
         const ajvValidator = AjvValidator.getInstance()
-        const gRPC_server = new gRPC_Server({...options, services})
+        const gRPC_server = new gRPC_Server({
+            PROTO_NAME: 'authentication',
+            services: services,
+            PORT: Number(PORT)
+        })
         //connect to database
         await MongoDatabase.connect({
             dbName: DB_NAME,
-            mongoUrl: DB_URL,
-          })
+            mongoUrl: mongodbConnection,
+        })
         ajvValidator.start()
         gRPC_server.start()
     } catch (error) {

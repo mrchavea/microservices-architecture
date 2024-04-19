@@ -1,11 +1,12 @@
 {
-  "name": "authentication",
+  "name": "example",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start" : "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js"
+    "dev": "./node_modules/nodemon/bin/nodemon.js"
   },
   "author": "Daniel Castilla",
   "license": "ISC",

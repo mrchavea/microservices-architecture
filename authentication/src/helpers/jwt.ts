@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import { TOKEN_METHOD, TOKEN_TYPE } from './enums';
+import { TokenPayload } from './interfaces';
 require("dotenv").config();
 
 export interface generatedToken {
@@ -6,50 +8,46 @@ export interface generatedToken {
   duration: string | undefined
 }
 
-const DURATION : string = '2h' 
+const DURATION = {
+  ACCESS_TOKEN: '1h',
+  REFRESH_TOKEN: '6h'
+}
 
 export class JwtAdapter {
 
   static async generateToken( 
-    payload: Object, 
-    type: 'LOGIN' | 'REFRESH'): Promise<generatedToken|null> {
+    payload: TokenPayload): Promise<generatedToken|null> {
     return new Promise( ( resolve ) => {
-      const secret = type == 'LOGIN' ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET
-      const options = type == 'REFRESH' ? {expiresIn: DURATION} : {}
+      const secret = payload.type == TOKEN_TYPE.ACESS_TOKEN ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET
+      const options = payload.type == TOKEN_TYPE.ACESS_TOKEN ? {expiresIn: DURATION.ACCESS_TOKEN} : {expiresIn: DURATION.REFRESH_TOKEN}
       // todo: generación del seed
-      jwt.sign( {...payload, method:type}, secret!, options, (err, token) => {
+      jwt.sign( payload, secret!, options, (err, token) => {
 
         if ( err ) return resolve(null);
 
         resolve({
           token: token!,
-          duration: type == 'REFRESH' ? DURATION : undefined
+          duration: TOKEN_TYPE.ACESS_TOKEN ? DURATION.ACCESS_TOKEN : DURATION.REFRESH_TOKEN
         });
+        
       });
 
-
     } );
-
-
   }
 
 
-  static validateToken<T>( token: string, type: 'LOGIN' | 'REFRESH' ): Promise<T | null> {
-    const secret = type == 'LOGIN' ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET
+  static validateToken( token: string, type:TOKEN_TYPE ): Promise<TokenPayload | null> {
+    const secret = type == TOKEN_TYPE.ACESS_TOKEN ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET
     return new Promise( (resolve) => {
 
-      jwt.verify( token, secret!, (err, decoded) => {
+      jwt.verify( token, secret!, (err, payload) => {
 
         if ( err ) return resolve(null);
 
-        resolve(decoded as T);
+        resolve(payload as TokenPayload);
 
       });
-
-
     });
-
-
   }
 
 

@@ -5,11 +5,11 @@ class TokenRepositoryImpl {
     constructor(tokenDatasource) {
         this.tokenDatasource = tokenDatasource;
     }
-    generateAccessTokens(user) {
-        return this.tokenDatasource.generateAccessTokens(user);
+    generateTokens(user) {
+        return this.tokenDatasource.generateTokens(user);
     }
-    generateRefreshToken(refresh_token) {
-        throw new Error("Method not implemented.");
+    refreshAccessToken(refresh_token) {
+        return this.tokenDatasource.refreshAccessToken(refresh_token);
     }
     existsToken(access_token) {
         throw new Error("Method not implemented.");

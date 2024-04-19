@@ -1,9 +1,9 @@
 GET http://localhost:3000/example/hola
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkRhbmllbCIsIm1ldGhvZCI6IkxPR0lOIiwiaWF0IjoxNzA4ODI2MDc4LCJleHAiOjE3MDg4MjYxMzh9.WXmtAdQnhein6CzdiGSCLAEwCm1aamRX2JNardjNStM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYwNWJmMjViNGMxMTAxYTExZGNiNTE2IiwibWV0aG9kIjowLCJ0eXBlIjowLCJpYXQiOjE3MTE4NDA1NTcsImV4cCI6MTcxMTg0Nzc1N30.KikTn5TvwNkTYen34T0WaqbYdSnIjksrv6p-f8qhPM0
 ###
 
-GET http://localhost:3000/auth/refreshToken?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkRhbmllbCIsIm1ldGhvZCI6IlJFRlJFU0giLCJpYXQiOjE3MDg4MjU1NjV9.8FUlYtY3DoZ3l_4zWWZ6BNsn_0vcgtEMa-zUGaqvud0
-
+GET http://localhost:3000/auth/refreshToken
+Cookie: jwt_session=e%3A2ddbd3b07283782e9ac8591534d553c5%3A97ea1a425a44f3abad35b53d69bcc1230d8707a67e1089ab578e206682222c6e0277540f6d9c1e39d1f1ba948892259557db24451dfbc857fbe2491403baccf8aa0f853634d76f01709531b766fd62ae1b83ebb323a360626f915ef645e6a12e66b2fcb7d99e667b297287fa0b1b269de48c39d1ddcbb6b40c2229730881102e47452513d9c2f62347aa9787e8d90a8feb3f870a2a89daf2a92c628f34d20c36b73d70801c70fce5cf739b3ffcf045b5852a34baad41765eedff768f11dda4db
 ###
 
 POST http://localhost:3000/auth/login
@@ -11,5 +11,18 @@ Content-Type: application/json
 
 {
     "email": "dani@example.es",
+    "password": "123"
+}
+
+###
+
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "username": "daniel1234542",
+    "client_id": "6610df679aa69f94039714ef",
+    "name": "Daniel Castilla",
+    "email": "daniel@example1235244.es",
     "password": "123"
 }

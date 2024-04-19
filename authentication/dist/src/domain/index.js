@@ -23,6 +23,8 @@ __exportStar(require("./dtos/registerUser.dto"), exports);
 __exportStar(require("./dtos/token.dto"), exports);
 __exportStar(require("./use-cases/user/logInUser.use-case"), exports);
 __exportStar(require("./use-cases/user/registerUser.use-case"), exports);
+__exportStar(require("./use-cases/token/refreshAccessToken.use-case"), exports);
+__exportStar(require("./use-cases/token/validateAcessToken.use-case"), exports);
 __exportStar(require("./entities/ client.entity"), exports);
 __exportStar(require("./entities/ token.entity"), exports);
 __exportStar(require("./entities/ user.entity"), exports);

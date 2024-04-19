@@ -11,27 +11,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TokengRPCController = void 0;
 const domain_1 = require("../../domain");
+const enums_1 = require("../../helpers/enums");
 class TokengRPCController {
     constructor(tokenRepository) {
         this.tokenRepository = tokenRepository;
-        //No need to implement that call. It should be called logInUser instead
-        // public generateAccessToken:gRPCFunction = async (call, callback) => {
-        //     const {} = call
-        //     const token = this.tokenRepository.generateAccessToken()
-        // }
-        // public getAccessToken:gRPCFunction = async (call, callback) => {
-        //     const [error, ]
-        // }
-        this.verifyToken = (call, callback) => __awaiter(this, void 0, void 0, function* () {
+        this.handleError = (error, callback) => {
+            if (error instanceof domain_1.CustomError) {
+                return callback(null, { status: { code: error.statusCode,
+                        error: error.message }
+                });
+            }
+            return callback(null, { status: { code: 500,
+                    error: 'Internal Server Error' }
+            });
+        };
+        this.validateToken = (call, callback) => __awaiter(this, void 0, void 0, function* () {
+            const { token } = call.request;
+            try {
+                new domain_1.ValidateAccessToken().execute(token)
+                    .then(tokenData => callback(null, { status: { code: 200 }, user_id: tokenData.user_id }))
+                    .catch(err => this.handleError(err, callback));
+            }
+            catch (err) {
+                this.handleError(err, callback);
+            }
         });
         this.refreshToken = (call, callback) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            const [error, tokenDto] = domain_1.TokenDto.makeTokenDto((_a = call === null || call === void 0 ? void 0 : call.request) === null || _a === void 0 ? void 0 : _a.access_token, "REFRESH_TOKEN");
-            if (error)
-                callback(null, { access_token: null, status: 0 });
-            this.tokenRepository.generateRefreshToken(tokenDto)
-                .then(token => callback(null, { access_token: token.value, status: 1 }))
-                .catch(err => callback(null, { access_token: null, status: 0 }));
+            const { refresh_token } = call.request;
+            try {
+                const [error, tokenDto] = yield domain_1.TokenDto.makeTokenDto(refresh_token, enums_1.TOKEN_TYPE.REFRESH_TOKEN);
+                if (error)
+                    throw domain_1.CustomError.badRequest(error);
+                new domain_1.RefreshAccessToken(this.tokenRepository).execute(tokenDto)
+                    .then(generatedToken => callback(null, { status: { code: 200 }, access_token: generatedToken.access_token, acces_token_expiration: generatedToken.access_token_expiration }))
+                    .catch(err => this.handleError(err, callback));
+            }
+            catch (err) {
+                this.handleError(err, callback);
+            }
         });
     }
 }

@@ -9,9 +9,8 @@ class TokengRPCService {
         const tokenRepository = new infrastructure_1.TokenRepositoryImpl(tokenDatasource);
         const tokengRPCController = new token_grpc_controller_1.TokengRPCController(tokenRepository);
         return {
-            //getAccessToken: tokengRPCController.getAccessToken,
-            verifyToken: tokengRPCController.verifyToken,
-            refreshToken: tokengRPCController.refreshToken
+            refreshToken: tokengRPCController.refreshToken,
+            validateToken: tokengRPCController.validateToken
         };
     }
 }

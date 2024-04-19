@@ -9,6 +9,8 @@ export * from "./dtos/token.dto"
 
 export * from "./use-cases/user/logInUser.use-case"
 export * from "./use-cases/user/registerUser.use-case"
+export * from "./use-cases/token/refreshAccessToken.use-case"
+export * from "./use-cases/token/validateAcessToken.use-case"
 
 export * from "./entities/ client.entity"
 export * from "./entities/ token.entity"

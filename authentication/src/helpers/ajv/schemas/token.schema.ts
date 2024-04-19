@@ -9,15 +9,24 @@ export const TokenJsonSchema = {
     },
     expiry_time: {
       type: "string",
-      format: "date",
+      format: "date-time",
     },
     type: {
-      enum: ["LOGIN", "REFRESH"]
+      enum: [0, 1]
+    },
+    method: {
+      enum: [0, 1]
     },
     user_id: {
       type: "string",
-      format: "uuid",
-    }
+      format: "objectId",
+    },
+    iat: {
+      type: "number"
+    },
+    exp:{
+      type: "number"
+    },
   },
-  required: ["value", "type", "user_id"]
+  required: ["value", "type", "method", "user_id"]
 };

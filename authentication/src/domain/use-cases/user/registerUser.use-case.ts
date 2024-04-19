@@ -1,4 +1,7 @@
 import { RegisterUserDto } from "../../dtos/registerUser.dto";
+import { Token } from "../../entities/ token.entity";
+import { User } from "../../entities/ user.entity";
+import { CustomError } from "../../entities/error.entity";
 import { TokenRepository } from "../../repositories/token.repository";
 import { UserRepository } from "../../repositories/user.repository";
 
@@ -7,12 +10,11 @@ interface RegisterUserUseCase {
 }
 
 interface UserToken {
-    token: string,
-    user: {
-        name: string,
-        email: string,
-        id: string
-    }
+    tokens: {
+        access_token:Token,
+        refresh_token: Token,
+    },
+    user: User
 }
 
 export class RegisterUser implements RegisterUserUseCase {
@@ -25,21 +27,17 @@ export class RegisterUser implements RegisterUserUseCase {
         this.tokenRepository = tokenRepository;
     }
     
-    execute(registerUserDto: RegisterUserDto): Promise<UserToken> {
-        throw new Error("Method not implemented.");
-    }
-
+    async execute(registerUserDto: RegisterUserDto): Promise<UserToken> {
+            const user = await this.userRepository.registerUser(registerUserDto)
+            const tokens = await this.tokenRepository.generateTokens(user)
     
-
-    // async execute(logInUserDto: RegisterUserDto): Promise<UserToken> {
-        
-    //     const user = await this.userRepository.authenticateUser(logInUserDto)
-    //     const tokens = await this.tokenRepository.generateAccessTokens(user)
-        
-    //     return {
-    //         access_token: tokens.access_token.value,
-    //         refresh_token: tokens.refresh_token.value
-    //     }
-    // }
+            return {
+                user: user,
+                tokens: {
+                    access_token: tokens.access_token,
+                    refresh_token: tokens.refresh_token
+                }
+            }
+    }
     
 }

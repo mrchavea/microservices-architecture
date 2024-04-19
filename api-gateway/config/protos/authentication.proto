@@ -9,10 +9,11 @@ package authentication;
 
 service Token {
   rpc refreshToken (RefreshRequest) returns (RefreshReply) {}
+  rpc validateToken (ValidateRequest) returns (ValidateReply) {}
 }
 
 service User {
-  rpc registerUser (SignUpRequest) returns (SignUpRequest) {}
+  rpc registerUser (SignUpRequest) returns (SignUpReply) {}
   rpc authenticateUser (SignInRequest) returns (SignInReply) {}
   rpc logOutUser (LogOutRequest) returns (LogOutReply) {}
 }
@@ -31,7 +32,18 @@ message RefreshRequest {
 message RefreshReply {
   Status status = 1;
   string access_token = 2;
+  string access_token_expiration = 3;
 }
+
+message ValidateRequest {
+  string token = 1;
+}
+
+message ValidateReply {
+  Status status = 1;
+  string user_id = 2;
+}
+
 
 //User
 message SignUpRequest {
@@ -47,8 +59,11 @@ message SignUpReply {
   string name = 2;
   string email = 3;
   string username = 4;
-  string access_token = 5;
-  string refresh_token = 6;
+  string id = 5;
+  string access_token = 6;
+  string refresh_token = 7;
+  string access_token_expiration = 8;
+  string refresh_token_expiration = 9;
 }
 
 message SignInRequest {
@@ -60,6 +75,8 @@ message SignInReply {
   Status status = 1;
   string access_token = 2;
   string refresh_token = 3;
+  string access_token_expiration = 4;
+  string refresh_token_expiration = 5;
 }
 
 message LogOutRequest {
@@ -69,6 +86,3 @@ message LogOutRequest {
 message LogOutReply {
   Status status = 1;
 }
-
-
-

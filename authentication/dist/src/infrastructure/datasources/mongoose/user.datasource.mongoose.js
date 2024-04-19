@@ -33,6 +33,7 @@ class UserDatasourceMongoose {
                 //if(client.activeUsers)
                 const user = yield models_1.UserModel.create({
                     name,
+                    email,
                     client_id,
                     password: yield this.hashPassword(password),
                     username
@@ -43,6 +44,7 @@ class UserDatasourceMongoose {
             catch (error) {
                 if (error instanceof domain_1.CustomError)
                     throw error;
+                console.log("DATS ERR", error);
                 throw domain_1.CustomError.badRequest('Error creating user');
             }
         });
@@ -56,7 +58,7 @@ class UserDatasourceMongoose {
                     throw domain_1.CustomError.badRequest("Email or password wrong");
                 if (!(yield this.comparePassword(password, user.password)))
                     throw domain_1.CustomError.badRequest("Email or password wrong");
-                return user_mapper_1.UserMapper.userFromObject({ user });
+                return user_mapper_1.UserMapper.userFromObject(user);
             }
             catch (error) {
                 if (error instanceof domain_1.CustomError)

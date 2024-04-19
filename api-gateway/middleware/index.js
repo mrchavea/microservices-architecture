@@ -1,21 +1,26 @@
-const gRPCClient = require("../gRPCClient");
+const { tokengRPCClient } = require("../gRPCClient");
 
 async function authenticateToken(req, res, next) {
+  console.time("validating");
   //Disable authentication for authentication microservice and functionalities
   if (req.path.startsWith("/auth")) return next();
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) return res.sendStatus(401);
-  const verifyToken = () =>
+
+  const validateToken = () =>
     new Promise((resolve, reject) =>
-      gRPCClient.verifyToken({ access_token: token }, (err, res) => {
+      tokengRPCClient.validateToken({ token }, (err, res) => {
         if (err) return reject(err);
         resolve(res);
       })
     );
-  const response = await verifyToken();
-  if (!response?.username || response.status != 1) return res.sendStatus(403);
-  req.username = response?.username;
+
+  const response = await validateToken();
+  console.log("RES", response);
+  console.timeEnd("validating");
+  if (response?.status?.code != 200) return res.sendStatus(403);
+  req.user_id = response?.user_id;
   next();
 }
 

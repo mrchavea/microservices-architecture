@@ -10,24 +10,26 @@
     "build": "rimraf ./dist && tsc",
     "start": "npm run build && npm run copy-protobuf && cross-env NODE_ENV=production node dist/src/app.js",
     "compile": "tsc && node src/app.ts",
-    "dev": "node_modules/.bin/tsc-watch --onSuccess 'nodemon src/app.ts'",
+    "dev": "cross-env NODE_ENV=development node_modules/.bin/tsc-watch --onSuccess 'nodemon src/app.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@types/ajv-errors": "^2.0.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.24",
+    "cross-env": "^7.0.3",
     "nodemon": "^3.0.3",
     "rimraf": "^5.0.5",
     "ts-node-dev": "^2.0.0",
     "tsc-watch": "^6.0.4",
-    "typescript": "^5.3.3",
-    "cross-env": "^7.0.3"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.5.9",
     "@grpc/proto-loader": "^0.6.9",
     "ajv": "^8.12.0",
+    "ajv-errors": "3.0.0",
     "ajv-formats": "^2.1.1",
     "async": "^3.2.3",
     "bcryptjs": "^2.4.3",

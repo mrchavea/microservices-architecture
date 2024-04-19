@@ -28,6 +28,7 @@ export class UserDatasourceMongoose implements UserDatasource{
             //if(client.activeUsers)
             const user = await UserModel.create({
                 name,
+                email,
                 client_id,
                 password: await this.hashPassword(password), 
                 username
@@ -36,6 +37,7 @@ export class UserDatasourceMongoose implements UserDatasource{
             return UserMapper.userFromObject(user)
         } catch (error) {
             if(error instanceof CustomError) throw error
+            console.log("DATS ERR", error)
             throw CustomError.badRequest('Error creating user')
         }
     }
@@ -46,7 +48,7 @@ export class UserDatasourceMongoose implements UserDatasource{
             const user = await UserModel.findOne({email})
             if(!user) throw CustomError.badRequest("Email or password wrong")
             if(!await this.comparePassword(password, user.password)) throw CustomError.badRequest("Email or password wrong")
-            return UserMapper.userFromObject({user})
+            return UserMapper.userFromObject(user)
         } catch (error) {
             if(error instanceof CustomError) throw error
             throw CustomError.internalServer('Log in error')

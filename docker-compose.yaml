@@ -32,12 +32,16 @@ services:
   microservices-example:
     build:
       context: ./example
+      dockerfile: Dockerfile.dev
     depends_on:
       - microservices-gateway
     ports:
       - "3001:3001"
     networks:
       - my-network
+    volumes:
+      - ./example:/apps/example
+      - /apps/example/node_modules
 
   mongo_authentication:
     image: mongo
@@ -48,11 +52,11 @@ services:
     networks:
       - my-network
     volumes:
-      - mongo-data:/data/db
+      - mongo-authentication-data:/data/db
 
 networks:
   my-network:
     driver: bridge
 
 volumes:
-  mongo-data:
+  mongo-authentication-data:

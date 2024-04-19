@@ -1,37 +1,32 @@
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
+
+import { AjvValidator, JwtAdapter, TOKEN_METHOD, TOKEN_TYPE, TokenPayload } from "../../helpers";
+import { CustomError } from "../entities/error.entity";
 
 export class TokenDto {    
 
     value: string;
     expiry_time: Date | undefined;
     user_id: string;
-    type: 'REFRESH_TOKEN' | 'LOGIN';
+    type: TOKEN_TYPE;
+    method: TOKEN_METHOD;
   
-    private constructor(value:string, user_id:string, type: 'REFRESH_TOKEN' | 'LOGIN', expiry_time?:Date) {
+    private constructor(value:string, user_id:string, type:TOKEN_TYPE, method: TOKEN_METHOD, expiry_time?:Date) {
       this.value = value;
       this.expiry_time = expiry_time;
       this.user_id = user_id;
       this.type = type;
+      this.method= method;
     }
 
-    static makeTokenDto( encoded_token: string, tokenType: 'REFRESH_TOKEN' | 'LOGIN') : [string?, TokenDto?]{
+    static async makeTokenDto( encoded_token: string, tokenType:TOKEN_TYPE) : Promise<[(string | undefined)?, (TokenDto | undefined)?]>{
       
-      const privateKey = tokenType == 'LOGIN' ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET
-      const tokenPayload = jwt.verify(
-            encoded_token,
-            privateKey,
-            (err: object, payload:object ) => {
-              if (err) return null;
-              return payload;
-            }
-          );
-
+      const tokenPayload:TokenPayload | null = await JwtAdapter.validateToken(encoded_token, tokenType)
       if(!tokenPayload) return ['The token is wrong or expired', undefined]
-      const {user_id, type} = tokenPayload
-      if(!user_id || !type) return ['Token payload incorrect', undefined]
-      if(type != 'LOGIN' && type!='REFRESH_TOKEN') return ['Token type incorrect', undefined]
+      const validationErrors = await AjvValidator.getInstance().validate("token", {...tokenPayload, value: encoded_token})
+      if(validationErrors.length > 0) throw CustomError.badRequest(validationErrors[0])
       
-      return [undefined, new TokenDto(encoded_token, user_id, type)]
+      const {user_id, type, method} = tokenPayload
+
+      return [undefined, new TokenDto(encoded_token, user_id, type, method)]
     }
 }

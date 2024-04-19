@@ -23,9 +23,14 @@ if (argv.target) {
 } else {
   target = "microservices-authentication:50051";
 }
-var client = new authentication_proto.User(
+var usergRPCClient = new authentication_proto.User(
   target,
   grpc.credentials.createInsecure()
 );
 
-module.exports = client;
+var tokengRPCClient = new authentication_proto.Token(
+  target,
+  grpc.credentials.createInsecure()
+);
+
+module.exports = { tokengRPCClient, usergRPCClient };

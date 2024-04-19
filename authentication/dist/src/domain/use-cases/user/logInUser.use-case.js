@@ -18,10 +18,10 @@ class LogInUser {
     execute(logInUserDto) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.userRepository.authenticateUser(logInUserDto);
-            const tokens = yield this.tokenRepository.generateAccessTokens(user);
+            const tokens = yield this.tokenRepository.generateTokens(user);
             return {
-                access_token: tokens.access_token.value,
-                refresh_token: tokens.refresh_token.value
+                access_token: tokens.access_token,
+                refresh_token: tokens.refresh_token
             };
         });
     }

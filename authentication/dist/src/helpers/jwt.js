@@ -14,33 +14,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtAdapter = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const enums_1 = require("./enums");
 require("dotenv").config();
-const DURATION = '2h';
+const DURATION = {
+    ACCESS_TOKEN: '1h',
+    REFRESH_TOKEN: '6h'
+};
 class JwtAdapter {
-    static generateToken(payload, type) {
+    static generateToken(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve) => {
-                const secret = type == 'LOGIN' ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET;
-                const options = type == 'REFRESH' ? { expiresIn: DURATION } : {};
+                const secret = payload.type == enums_1.TOKEN_TYPE.ACESS_TOKEN ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET;
+                const options = payload.type == enums_1.TOKEN_TYPE.ACESS_TOKEN ? { expiresIn: DURATION.ACCESS_TOKEN } : { expiresIn: DURATION.REFRESH_TOKEN };
                 // todo: generación del seed
-                jsonwebtoken_1.default.sign(Object.assign(Object.assign({}, payload), { method: type }), secret, options, (err, token) => {
+                jsonwebtoken_1.default.sign(payload, secret, options, (err, token) => {
                     if (err)
                         return resolve(null);
                     resolve({
                         token: token,
-                        duration: type == 'REFRESH' ? DURATION : undefined
+                        duration: enums_1.TOKEN_TYPE.ACESS_TOKEN ? DURATION.ACCESS_TOKEN : DURATION.REFRESH_TOKEN
                     });
                 });
             });
         });
     }
     static validateToken(token, type) {
-        const secret = type == 'LOGIN' ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET;
+        const secret = type == enums_1.TOKEN_TYPE.ACESS_TOKEN ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET;
         return new Promise((resolve) => {
-            jsonwebtoken_1.default.verify(token, secret, (err, decoded) => {
+            jsonwebtoken_1.default.verify(token, secret, (err, payload) => {
                 if (err)
                     return resolve(null);
-                resolve(decoded);
+                resolve(payload);
             });
         });
     }

@@ -36,7 +36,7 @@ const tokensSchema = {
 };
 const userSchema = new mongoose_1.Schema({
     client_id: {
-        type: 'UUID',
+        type: mongoose_1.default.Types.ObjectId,
         required: true
     },
     name: {
@@ -67,7 +67,6 @@ const userSchema = new mongoose_1.Schema({
         type: "string",
         required: true,
         minLength: 6,
-        maxLength: 50
     },
     tokens: {
         type: tokensSchema,

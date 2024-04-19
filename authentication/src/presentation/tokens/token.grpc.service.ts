@@ -9,9 +9,8 @@ export class TokengRPCService{
         const tokenRepository = new TokenRepositoryImpl(tokenDatasource)
         const tokengRPCController = new TokengRPCController(tokenRepository)
         return {
-            //getAccessToken: tokengRPCController.getAccessToken,
-            verifyToken: tokengRPCController.verifyToken,
-            refreshToken: tokengRPCController.refreshToken
+            refreshToken: tokengRPCController.refreshToken,
+            validateToken: tokengRPCController.validateToken
         }
     }
 }

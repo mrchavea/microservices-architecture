@@ -12,7 +12,7 @@ const tokensSchema = {
 
 const userSchema = new Schema({
   client_id: {
-    type: 'UUID',
+    type: mongoose.Types.ObjectId,
     required: true
   },
   name: {
@@ -43,7 +43,6 @@ const userSchema = new Schema({
     type: "string",
     required: true,
     minLength: 6,
-    maxLength: 50
   },
   tokens: {
     type: tokensSchema,

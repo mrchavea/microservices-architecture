@@ -6,19 +6,41 @@ export const UserJsonSchema = {
     name: {
       type: "string",
       minLength: 2,
-      maxLength: 50
+      maxLength: 50,
+      errorMessage: {
+        required: "Date of Birth is Required Property",
+        pattern: "Correct format of Date Of Birth is dd-mmm-yyyy",
+        format: "INCORRECT FORMAT"
+      },
     },
-    plan_id: {
+    id: {
       type: "string",
-      format: "uuid"
+      format: "objectId",
     },
-    subscriptions_id: {
+    client_id: {
       type: "string",
-      format: "uuid"
+      format: "objectId",  
     },
-    isActive: {
-      type: "boolean"
-    }
-  },
-  required: ["name", "plan_id", "subscriptions_id", "isActive"]
-};
+    username: {
+      type: "string",
+      minLength: 2,
+      maxLength: 50,   },
+      email: {
+        type: "string",
+        format: "email",   },
+        password: {
+          type: "string",
+          format: "password",  
+        },
+      },
+      errorMessage: {
+        properties: {
+          name: "Name is invalid",
+          client_id: "client_id is invalid",
+          username: "Username is invalid",
+          email: "Email is invalid",
+          password: "Password is invalid",
+        }
+      },
+      required: ["name", "username", "password", "email", "client_id"]
+    };

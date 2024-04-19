@@ -33,11 +33,11 @@ const clientSchema = new mongoose_1.Schema({
         maxLength: 50
     },
     plan_id: {
-        type: 'UUID',
+        type: mongoose_1.default.Types.ObjectId,
         required: true
     },
     subscription_id: {
-        type: 'UUID',
+        type: mongoose_1.default.Types.ObjectId,
         required: true
     },
     isActive: {

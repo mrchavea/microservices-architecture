@@ -18,7 +18,8 @@ export class RegisterUserDto {
 
     static async makeUser( object: {[key: string]: any}) : Promise<[string?, RegisterUserDto?]>{
         const {name, username, email, password, client_id} = object
-            const validationErrors = AjvValidator.getInstance().validate("user", object)
+            const validationErrors = await AjvValidator.getInstance().validate("user", object)
+            console.log("VALIDATION ERR?", validationErrors)
             if(validationErrors.length > 0) {
                 return [validationErrors[0], undefined];
             }

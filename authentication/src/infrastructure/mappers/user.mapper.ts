@@ -1,15 +1,20 @@
 import { CustomError, User } from "../../domain";
-import { AjvValidator } from "../../helpers";
 
 export class UserMapper {
 
-    static userFromObject (object:{[key:string]:any}): User {
+    static async userFromObject (object:{[key:string]:any}): Promise<User> {
         const {id, _id, client_id, name, email, username, password} = object;
-        const validationErrors = AjvValidator.getInstance().validate("user", object)
-        if(validationErrors.length > 0){
-            throw CustomError.internalServer("Database entity error: " + validationErrors[0])
-        }
+        console.log("Mapper", id, _id, client_id, name, email, username, password)
+        
+        if ( !_id || !id ) {
+            throw CustomError.badRequest('Missing id');
+          }
+      
+        if ( !name ) throw CustomError.badRequest('Missing name');
+        if ( !email ) throw CustomError.badRequest('Missing email');
+        if ( !password ) throw CustomError.badRequest('Missing password');
+        if ( !username ) throw CustomError.badRequest('Missing username');
 
-        return new User(id || _id, client_id, name, email, username, password)
+        return new User(id || _id, client_id.toString(), name, email, username, password)
     }
 }

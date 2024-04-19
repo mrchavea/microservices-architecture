@@ -1,14 +1,15 @@
-import Ajv from "ajv"
+import Ajv, { ValidateFunction } from "ajv"
 import addFormats from "ajv-formats"
+import ajvErrors from "ajv-errors"
 import { ClientJsonSchema,UserJsonSchema, TokenJsonSchema } from "./schemas";
-import {  ValidateFunction } from "ajv/dist/core";
+import { CustomError } from "../../domain";
 
 //Singleton pattern
 export class AjvValidator{
 
     private static instance: AjvValidator;
-    private validators:{[key:string]:ValidateFunction<unknown>} = {}
-    private ajv_validator = new Ajv({ allErrors:true});
+    private validators:{[key:string]:ValidateFunction} = {}
+    private ajv_validator = new Ajv({ allErrors:true, messages:true, $data:true});
 
     private constructor(){}
 
@@ -25,24 +26,32 @@ export class AjvValidator{
         this.validators[name] = validator
     }
 
-    public validate<T>(schemaName: string, data: T): string[] {
-        const validator  = this.validators[schemaName]
+    public async validate<T>(schemaName: string, data: T): Promise<string[]> {
+        console.log("DATA TO VALIDATE", data)
+        const validator:ValidateFunction<unknown>  = this.validators[schemaName]
         if(!validator) throw Error("Validator error!")
-
-        const isValid = validator(data)
-      
-        if (!isValid) {
-            if(!validator.errors) throw Error("Validator error!")
-            let errors: string[] = []
-            validator.errors.forEach(error =>  error.message ? errors.push(error.message) : null)
-            return errors
+        try {
+            const isValid = await validator(data);
+            if (isValid) return [];
+        } catch (error: any | unknown) {
+            console.log("CATCH", error)
+            if(error instanceof Ajv.ValidationError && error.errors) {
+                let errors: string[] = []
+                error?.errors.forEach((error: {[key:string]:any}) =>  error.message ? errors.push(error.message) : null)
+                return errors            
+            }
         }
-
-        return []
+        throw CustomError.internalServer("Critical validation error!")
     }
 
     start(){
-        addFormats(this.ajv_validator, {mode:"fast" ,formats:["date", "time","uuid","email","password","url"], keywords: true})
+        ajvErrors(this.ajv_validator)
+        addFormats(this.ajv_validator, {mode:"fast" ,formats:["date", "date-time", "time","uuid","email","password","url"], keywords: true})
+        // Registrar el formato personalizado para ObjectId
+        this.ajv_validator.addFormat('objectId', {
+            type: 'string',
+            validate: (data:string) => /^[0-9a-fA-F]{24}$/.test(data),
+        });
         this.compileSchema("user",UserJsonSchema)
         this.compileSchema("client",ClientJsonSchema)
         this.compileSchema("token",TokenJsonSchema)

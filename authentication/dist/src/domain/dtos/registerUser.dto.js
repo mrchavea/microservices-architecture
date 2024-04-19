@@ -22,7 +22,8 @@ class RegisterUserDto {
     static makeUser(object) {
         return __awaiter(this, void 0, void 0, function* () {
             const { name, username, email, password, client_id } = object;
-            const validationErrors = helpers_1.AjvValidator.getInstance().validate("user", object);
+            const validationErrors = yield helpers_1.AjvValidator.getInstance().validate("user", object);
+            console.log("VALIDATION ERR?", validationErrors);
             if (validationErrors.length > 0) {
                 return [validationErrors[0], undefined];
             }

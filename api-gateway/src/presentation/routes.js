@@ -4,8 +4,7 @@ const { default: axios } = require("axios");
 const registry = require("./registry.json");
 
 router.all("/:apiName/:path", async (req, res) => {
-  console.log("AQUI?");
-  console.log("AUTENTICADO", req.username);
+  const { user_id } = req;
   if (registry.services[req.params?.apiName]) {
     const getData = async () =>
       await axios(
@@ -14,23 +13,22 @@ router.all("/:apiName/:path", async (req, res) => {
           url: registry.services[req.params?.apiName].url + req.params.path,
           headers: req.headers,
           data: req.body,
-          params: req.params
-        },
-        {
-          params: {
-            token: 123,
-            apiName: "authorization"
-          }
+          params: { ...req.params, user_id: user_id }
         }
+        // {
+        //   params: {
+        //     user_id: user_id
+        //   }
+        // }
       );
 
     const response = await getData();
     console.timeEnd("http communication");
 
-    console.log("AUTHENTICATED?", response);
-    res.status(200).json(isAuthorized.data.message);
+    //console.log("AUTHENTICATED?", response);
+    return res.status(200).json(response.data);
   }
-  res.sendStatus(404);
+  return res.sendStatus(404);
 });
 
 module.exports = router;
