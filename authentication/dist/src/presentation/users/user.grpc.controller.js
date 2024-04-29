@@ -37,8 +37,8 @@ class UsergRPCController {
                     .then(tokens => callback(null, { status: { code: 200 },
                     access_token: tokens.access_token.value,
                     refresh_token: tokens.refresh_token.value,
-                    access_token_expiration: tokens.access_token.expiry_time.toUTCString(),
-                    refresh_token_expiration: tokens.refresh_token.expiry_time.toUTCString(),
+                    access_token_expiration: tokens.access_token.expiry_time.toString(),
+                    refresh_token_expiration: tokens.refresh_token.expiry_time.toString(),
                 }))
                     .catch(err => this.handleError(err, callback));
             }

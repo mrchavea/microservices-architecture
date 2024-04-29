@@ -1,8 +1,6 @@
 function sendRefreshCookie(response, refresh_token, refresh_token_expiration) {
   response.cookie("jwt_session", refresh_token, {
-    maxAge: refresh_token_expiration
-      ? calculateMiliseconds(refresh_token_expiration)
-      : 36000, //1 day
+    maxAge: calculateMiliseconds(refresh_token_expiration),
     domain: "localhost",
     path: "/",
     sameSite: "strict", // o 'strict'
@@ -18,9 +16,7 @@ function sendAccessToken(response, access_token, access_token_expiration) {
     calculateMiliseconds(access_token_expiration)
   );
   return response.cookie("jwt_access", access_token, {
-    maxAge: access_token_expiration
-      ? calculateMiliseconds(access_token_expiration)
-      : 36000, //5 minutes
+    maxAge: calculateMiliseconds(access_token_expiration),
     domain: "localhost",
     path: "/",
     sameSite: "strict", // o 'strict'
@@ -32,7 +28,7 @@ function sendAccessToken(response, access_token, access_token_expiration) {
 
 function calculateMiliseconds(string_date) {
   if (!string_date) throw Error("Error with cookie expiration");
-  return new Date(string_date).getMilliseconds() - new Date().getMilliseconds();
+  return new Date(string_date).getTime() - new Date().getTime();
 }
 
 module.exports = { sendRefreshCookie, sendAccessToken };

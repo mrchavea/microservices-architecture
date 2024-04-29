@@ -19,6 +19,7 @@ class LogInUser {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.userRepository.authenticateUser(logInUserDto);
             const tokens = yield this.tokenRepository.generateTokens(user);
+            console.log("DATES USE CASE", tokens.access_token.expiry_time, tokens.refresh_token.expiry_time);
             return {
                 access_token: tokens.access_token,
                 refresh_token: tokens.refresh_token

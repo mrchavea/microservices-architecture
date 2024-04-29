@@ -27,6 +27,7 @@ export class LogInUser implements LogInUserUseCase {
         
         const user = await this.userRepository.authenticateUser(logInUserDto)
         const tokens = await this.tokenRepository.generateTokens(user)
+        console.log("DATES USE CASE", tokens.access_token.expiry_time, tokens.refresh_token.expiry_time)
         
         return {
             access_token: tokens.access_token,

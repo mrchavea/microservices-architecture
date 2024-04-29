@@ -27,7 +27,7 @@ export class JwtAdapter {
 
         resolve({
           token: token!,
-          duration: TOKEN_TYPE.ACESS_TOKEN ? DURATION.ACCESS_TOKEN : DURATION.REFRESH_TOKEN
+          duration: payload.type == TOKEN_TYPE.ACESS_TOKEN ? DURATION.ACCESS_TOKEN : DURATION.REFRESH_TOKEN
         });
         
       });

@@ -32,7 +32,7 @@ class JwtAdapter {
                         return resolve(null);
                     resolve({
                         token: token,
-                        duration: enums_1.TOKEN_TYPE.ACESS_TOKEN ? DURATION.ACCESS_TOKEN : DURATION.REFRESH_TOKEN
+                        duration: payload.type == enums_1.TOKEN_TYPE.ACESS_TOKEN ? DURATION.ACCESS_TOKEN : DURATION.REFRESH_TOKEN
                     });
                 });
             });

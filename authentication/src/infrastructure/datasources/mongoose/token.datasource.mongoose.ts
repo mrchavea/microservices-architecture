@@ -1,10 +1,7 @@
 import { UserModel } from "../../../../database/mongoose/models";
-import {CustomError, Token, TokenDatasource, TokenDto, User } from "../../../domain";
-import { TOKEN_METHOD, TOKEN_TYPE } from "../../../helpers/enums";
-import { TokenPayload } from "../../../helpers/interfaces";
-import { JwtAdapter, generatedToken } from "../../../helpers/jwt";
-import { calculateInMiliseconds } from "../../../helpers/stringDurationToMs";
 import { TokenMapper } from "../../mappers";
+import {CustomError, Token, TokenDatasource, TokenDto, User } from "../../../domain";
+import {addTimeFromNow, TokenPayload, generatedToken, JwtAdapter, TOKEN_METHOD, TOKEN_TYPE} from "../../../helpers";
 
 interface generateTokenFunction {
     ( payload: TokenPayload): Promise<generatedToken|null>
@@ -28,17 +25,10 @@ export class TokenDatasourceMongoose implements TokenDatasource{
     async generateTokens(user: User): Promise<{ access_token: Token; refresh_token: Token; }> {
         //TODO: Receive mongoose transaction in order to revert user creation if error
         try {
-            console.log("USER.entity", user)
             const access_token = await this.generateToken({user_id: user.id, method: TOKEN_METHOD.LOGIN, type: TOKEN_TYPE.ACESS_TOKEN})
             const refresh_token = await this.generateToken({user_id: user.id,  method: TOKEN_METHOD.LOGIN, type:TOKEN_TYPE.REFRESH_TOKEN})
-            let access_token_expirationDate = new Date()
-            access_token_expirationDate.setHours
-                (0,0,0,access_token_expirationDate.getHours() 
-                    + calculateInMiliseconds(access_token?.duration!))
-            let refresh_token_expirationDate = new Date()
-            refresh_token_expirationDate.setHours
-                (0,0,0,refresh_token_expirationDate.getHours() 
-                    + calculateInMiliseconds(refresh_token?.duration!))
+            const access_token_expirationDate = addTimeFromNow(access_token?.duration!)
+            const refresh_token_expirationDate = addTimeFromNow(refresh_token?.duration!)
             //Add refresh token to database
             const userUpdate = {tokens: {refresh_token: refresh_token?.token}}
             await UserModel.findOneAndUpdate({_id: user.id}, userUpdate)
@@ -79,10 +69,7 @@ export class TokenDatasourceMongoose implements TokenDatasource{
         if(!savedToken || savedToken.tokens?.refresh_token != refresh_token.value) throw CustomError.badRequest("Token does not exist!")
         
         const access_token = await this.generateToken({user_id: refresh_token.user_id, method: TOKEN_METHOD.REFRESH, type: TOKEN_TYPE.ACESS_TOKEN})
-        let access_token_expirationDate = new Date()
-        access_token_expirationDate.setHours
-        (0,0,0,access_token_expirationDate.getHours() 
-        + calculateInMiliseconds(access_token?.duration!))
+        const access_token_expirationDate = addTimeFromNow(access_token?.duration!)
         
         console.log("EXIST?",access_token_expirationDate)
         return TokenMapper.tokenFromObject({

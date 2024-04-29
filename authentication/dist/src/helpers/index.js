@@ -19,3 +19,4 @@ __exportStar(require("./ajv/ajv.validator"), exports);
 __exportStar(require("./interfaces"), exports);
 __exportStar(require("./enums"), exports);
 __exportStar(require("./jwt"), exports);
+__exportStar(require("./functions/addTimeFromNow"), exports);

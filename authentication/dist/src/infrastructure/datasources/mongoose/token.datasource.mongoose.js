@@ -11,13 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TokenDatasourceMongoose = void 0;
 const models_1 = require("../../../../database/mongoose/models");
-const domain_1 = require("../../../domain");
-const enums_1 = require("../../../helpers/enums");
-const jwt_1 = require("../../../helpers/jwt");
-const stringDurationToMs_1 = require("../../../helpers/stringDurationToMs");
 const mappers_1 = require("../../mappers");
+const domain_1 = require("../../../domain");
+const helpers_1 = require("../../../helpers");
 class TokenDatasourceMongoose {
-    constructor(generateToken = jwt_1.JwtAdapter.generateToken, validateToken = jwt_1.JwtAdapter.validateToken) {
+    constructor(generateToken = helpers_1.JwtAdapter.generateToken, validateToken = helpers_1.JwtAdapter.validateToken) {
         this.generateToken = generateToken;
         this.validateToken = validateToken;
     }
@@ -25,15 +23,10 @@ class TokenDatasourceMongoose {
         return __awaiter(this, void 0, void 0, function* () {
             //TODO: Receive mongoose transaction in order to revert user creation if error
             try {
-                console.log("USER.entity", user);
-                const access_token = yield this.generateToken({ user_id: user.id, method: enums_1.TOKEN_METHOD.LOGIN, type: enums_1.TOKEN_TYPE.ACESS_TOKEN });
-                const refresh_token = yield this.generateToken({ user_id: user.id, method: enums_1.TOKEN_METHOD.LOGIN, type: enums_1.TOKEN_TYPE.REFRESH_TOKEN });
-                let access_token_expirationDate = new Date();
-                access_token_expirationDate.setHours(0, 0, 0, access_token_expirationDate.getHours()
-                    + (0, stringDurationToMs_1.calculateInMiliseconds)(access_token === null || access_token === void 0 ? void 0 : access_token.duration));
-                let refresh_token_expirationDate = new Date();
-                refresh_token_expirationDate.setHours(0, 0, 0, refresh_token_expirationDate.getHours()
-                    + (0, stringDurationToMs_1.calculateInMiliseconds)(refresh_token === null || refresh_token === void 0 ? void 0 : refresh_token.duration));
+                const access_token = yield this.generateToken({ user_id: user.id, method: helpers_1.TOKEN_METHOD.LOGIN, type: helpers_1.TOKEN_TYPE.ACESS_TOKEN });
+                const refresh_token = yield this.generateToken({ user_id: user.id, method: helpers_1.TOKEN_METHOD.LOGIN, type: helpers_1.TOKEN_TYPE.REFRESH_TOKEN });
+                const access_token_expirationDate = (0, helpers_1.addTimeFromNow)(access_token === null || access_token === void 0 ? void 0 : access_token.duration);
+                const refresh_token_expirationDate = (0, helpers_1.addTimeFromNow)(refresh_token === null || refresh_token === void 0 ? void 0 : refresh_token.duration);
                 //Add refresh token to database
                 const userUpdate = { tokens: { refresh_token: refresh_token === null || refresh_token === void 0 ? void 0 : refresh_token.token } };
                 yield models_1.UserModel.findOneAndUpdate({ _id: user.id }, userUpdate);
@@ -42,15 +35,15 @@ class TokenDatasourceMongoose {
                     value: access_token === null || access_token === void 0 ? void 0 : access_token.token,
                     user_id: user.id,
                     expiry_time: access_token_expirationDate,
-                    type: enums_1.TOKEN_TYPE.ACESS_TOKEN,
-                    method: enums_1.TOKEN_METHOD.LOGIN
+                    type: helpers_1.TOKEN_TYPE.ACESS_TOKEN,
+                    method: helpers_1.TOKEN_METHOD.LOGIN
                 });
                 const refresh_token_entity = yield mappers_1.TokenMapper.tokenFromObject({
                     value: refresh_token === null || refresh_token === void 0 ? void 0 : refresh_token.token,
                     user_id: user.id,
                     expiry_time: refresh_token_expirationDate,
-                    type: enums_1.TOKEN_TYPE.REFRESH_TOKEN,
-                    method: enums_1.TOKEN_METHOD.LOGIN
+                    type: helpers_1.TOKEN_TYPE.REFRESH_TOKEN,
+                    method: helpers_1.TOKEN_METHOD.LOGIN
                 });
                 return {
                     access_token: access_token_entity,
@@ -72,16 +65,14 @@ class TokenDatasourceMongoose {
             const savedToken = yield models_1.UserModel.findById(refresh_token.user_id, { tokens: { refresh_token: 1 } });
             if (!savedToken || ((_a = savedToken.tokens) === null || _a === void 0 ? void 0 : _a.refresh_token) != refresh_token.value)
                 throw domain_1.CustomError.badRequest("Token does not exist!");
-            const access_token = yield this.generateToken({ user_id: refresh_token.user_id, method: enums_1.TOKEN_METHOD.REFRESH, type: enums_1.TOKEN_TYPE.ACESS_TOKEN });
-            let access_token_expirationDate = new Date();
-            access_token_expirationDate.setHours(0, 0, 0, access_token_expirationDate.getHours()
-                + (0, stringDurationToMs_1.calculateInMiliseconds)(access_token === null || access_token === void 0 ? void 0 : access_token.duration));
+            const access_token = yield this.generateToken({ user_id: refresh_token.user_id, method: helpers_1.TOKEN_METHOD.REFRESH, type: helpers_1.TOKEN_TYPE.ACESS_TOKEN });
+            const access_token_expirationDate = (0, helpers_1.addTimeFromNow)(access_token === null || access_token === void 0 ? void 0 : access_token.duration);
             console.log("EXIST?", access_token_expirationDate);
             return mappers_1.TokenMapper.tokenFromObject({
                 user_id: refresh_token.user_id,
                 value: access_token === null || access_token === void 0 ? void 0 : access_token.token,
-                type: enums_1.TOKEN_TYPE.ACESS_TOKEN,
-                method: enums_1.TOKEN_METHOD.REFRESH,
+                type: helpers_1.TOKEN_TYPE.ACESS_TOKEN,
+                method: helpers_1.TOKEN_METHOD.REFRESH,
                 expiry_time: access_token_expirationDate
             });
         });
