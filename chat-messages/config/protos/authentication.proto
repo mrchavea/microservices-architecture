@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.authentication";
+option java_outer_classname = "AuthenticationProto";
+option objc_class_prefix = "HLW";
+
+package authentication;
+
+service Token {
+  rpc refreshToken (RefreshRequest) returns (RefreshReply) {}
+  rpc validateToken (ValidateRequest) returns (ValidateReply) {}
+}
+
+service User {
+  rpc registerUser (SignUpRequest) returns (SignUpReply) {}
+  rpc authenticateUser (SignInRequest) returns (SignInReply) {}
+  rpc logOutUser (LogOutRequest) returns (LogOutReply) {}
+}
+
+//General: Status message
+message Status {
+  int32 code = 1;
+  optional string error = 2;
+}
+
+//Token
+message RefreshRequest {
+  string refresh_token = 1;
+}
+
+message RefreshReply {
+  Status status = 1;
+  string access_token = 2;
+  string access_token_expiration = 3;
+}
+
+message ValidateRequest {
+  string token = 1;
+}
+
+message ValidateReply {
+  Status status = 1;
+  string user_id = 2;
+}
+
+
+//User
+message SignUpRequest {
+  string username = 1;
+  string email = 2;
+  string name = 3;
+  string password = 4;
+  string client_id = 5;
+}
+
+message SignUpReply {
+  Status status = 1;
+  string name = 2;
+  string email = 3;
+  string username = 4;
+  string id = 5;
+  string access_token = 6;
+  string refresh_token = 7;
+  string access_token_expiration = 8;
+  string refresh_token_expiration = 9;
+}
+
+message SignInRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignInReply {
+  Status status = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+  string access_token_expiration = 4;
+  string refresh_token_expiration = 5;
+}
+
+message LogOutRequest {
+  string email = 1;
+}
+
+message LogOutReply {
+  Status status = 1;
+}

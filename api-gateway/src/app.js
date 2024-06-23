@@ -25,9 +25,27 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
-  socket.on("message", (msg) => {
-    console.log("MSG:", msg);
-    socket.emit("message", "bye");
+
+  socket.on("join", (room) => {
+    socket.join(room);
+    console.log(`Socket ${socket.id} joining room ${room}`);
+  });
+
+  socket.on("leave", (room) => {
+    console.log(`Socket ${socket.id} leaving room ${room}`);
+    socket.leave(room);
+  });
+
+  socket.on("message", (message) => {
+    console.log("MSG:", message);
+    socket.to(message?.chatId).emit("message", {
+      id: message.id,
+      text: message.text,
+      from: message.from,
+      to: message.to,
+      sent_date: message.sent_date,
+      chatId: message.chatId
+    });
   });
 });
 

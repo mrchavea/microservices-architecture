@@ -29,19 +29,20 @@ services:
       - ./authentication:/apps/authentication
       - /apps/authentication/node_modules
 
-  microservices-example:
+  microservices-chat-messages:
     build:
-      context: ./example
+      context: ./chat-messages
       dockerfile: Dockerfile.dev
     depends_on:
+      - mongo_chat-messages
       - microservices-gateway
     ports:
       - "3001:3001"
     networks:
       - my-network
     volumes:
-      - ./example:/apps/example
-      - /apps/example/node_modules
+      - ./chat-messages:/apps/chat-messages
+      - /apps/chat-messages/node_modules
 
   mongo_authentication:
     image: mongo
@@ -54,9 +55,21 @@ services:
     volumes:
       - mongo-authentication-data:/data/db
 
+  mongo_chat-messages:
+    image: mongo
+    command: mongod --quiet
+    restart: always
+    ports:
+      - "27018:27017"
+    networks:
+      - my-network
+    volumes:
+      - mongo-chat-messages-data:/data/db
+
 networks:
   my-network:
     driver: bridge
 
 volumes:
   mongo-authentication-data:
+  mongo-chat-messages-data:
