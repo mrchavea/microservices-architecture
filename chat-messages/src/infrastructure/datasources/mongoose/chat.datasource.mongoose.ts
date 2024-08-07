@@ -1,7 +1,5 @@
-import { ChatModel } from "../../../../database/mongoose/models";
-import { Chat, ChatRepository, CustomError, Message } from "../../../domain";
-import { NewChatDto } from "../../../domain/dtos/newChat.dto";
-import { ChatMapper } from "../../../domain/mappers/chat.mapper";
+import { ChatModel } from '@/../database/mongoose/models'
+import {Chat, ChatRepository, CustomError, Message, NewChatDto, ChatMapper} from '@/domain'
 
 export class ChatDatasourceMongoose implements ChatRepository{
 

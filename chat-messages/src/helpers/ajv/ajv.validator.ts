@@ -1,8 +1,8 @@
+import { CustomError } from "@/domain";
+import { ChatJsonSchema } from "./schemas";
 import Ajv, { ValidateFunction } from "ajv"
 import addFormats from "ajv-formats"
 import ajvErrors from "ajv-errors"
-import { ClientJsonSchema,UserJsonSchema, TokenJsonSchema } from "./schemas";
-import { CustomError } from "../../domain";
 
 //Singleton pattern
 export class AjvValidator{
@@ -46,14 +46,12 @@ export class AjvValidator{
 
     start(){
         ajvErrors(this.ajv_validator)
-        addFormats(this.ajv_validator, {mode:"fast" ,formats:["date", "date-time", "time","uuid","email","password","url"], keywords: true})
+        addFormats(this.ajv_validator, {mode:"fast" ,formats:["date", "date-time", "time","uuid","email","url"], keywords: true})
         // Registrar el formato personalizado para ObjectId
         this.ajv_validator.addFormat('objectId', {
             type: 'string',
             validate: (data:string) => /^[0-9a-fA-F]{24}$/.test(data),
         });
-        this.compileSchema("user",UserJsonSchema)
-        this.compileSchema("client",ClientJsonSchema)
-        this.compileSchema("token",TokenJsonSchema)
+        this.compileSchema("chat",ChatJsonSchema)
     }
 }
