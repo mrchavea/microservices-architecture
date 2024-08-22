@@ -1,0 +1,10 @@
+{
+    "services": {
+        "example": {
+            "apiName": "example",
+            "host": "http://microservices-example:3001",
+            "port": 3001,
+            "url": "http://microservices-example:3001/"
+        }
+    }
+}

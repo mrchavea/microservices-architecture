@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   microservices-gateway:
@@ -25,23 +25,23 @@ services:
       NODE_ENV: development
     ports:
       - "50051:50051"
-      - "9229:9229"  # Puerto de depuración
-    command: ["node", "--inspect=0.0.0.0:9229", "src/app.ts"]
+      - "9229:9229" # Puerto de depuración
+    command: ["node", "--inspect=0.0.0.0:9229", "--nolazy", "src/app.ts"]
     networks:
       - my-network
     volumes:
       - ./authentication:/apps/authentication
       - /apps/authentication/node_modules
 
-  microservices-example:
-    build:
-      context: ./example
-    depends_on:
-      - microservices-gateway
-    ports:
-      - "3001:3001"
-    networks:
-      - my-network
+  # microservices-example:
+  #   build:
+  #     context: ./example
+  #   depends_on:
+  #     - microservices-gateway
+  #   ports:
+  #     - "3001:3001"
+  #   networks:
+  #     - my-network
 
   mongo_authentication:
     image: mongo
