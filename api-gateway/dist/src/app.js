@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const helmet_1 = __importDefault(require("helmet"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const cookieEncrypter = require('cookie-encrypter');
+const cookieEncrypter = require("cookie-encrypter");
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -21,17 +21,13 @@ const PORT = process.env.PORT || 3000;
 const CORS_OPTIONS = {
     origin: "http://localhost:4000",
     credentials: true,
-    allowedHeaders: ["jwt_session", "jwt_access"],
+    allowedHeaders: ["jwt_session", "jwt_access"]
 };
 // Configuración de la aplicación
 const app = (0, express_1.default)();
 const server = (0, http_1.createServer)(app);
 const io = new socket_io_1.Server(server, {
-    cors: {
-        origin: CORS_OPTIONS.origin,
-        credentials: CORS_OPTIONS.credentials,
-        allowedHeaders: CORS_OPTIONS.allowedHeaders
-    }
+    cors: CORS_OPTIONS
 });
 // Configuración de eventos de Socket.IO
 io.on("connection", (socket) => {

@@ -2,7 +2,7 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-const cookieEncrypter: any = require('cookie-encrypter');
+const cookieEncrypter: any = require("cookie-encrypter");
 import { createServer, Server as HTTPServer } from "http";
 import { Server as SocketIOServer, Socket } from "socket.io";
 import dotenv from "dotenv";
@@ -28,18 +28,15 @@ const PORT = process.env.PORT || 3000;
 const CORS_OPTIONS = {
   origin: "http://localhost:4000",
   credentials: true,
-  allowedHeaders: ["jwt_session", "jwt_access"],
+  allowedHeaders: ["jwt_session", "jwt_access"]
 };
 
 // Configuración de la aplicación
 const app: Express = express();
 const server: HTTPServer = createServer(app);
 const io: SocketIOServer = new SocketIOServer(server, {
-  cors: {
-    origin: CORS_OPTIONS.origin,
-    credentials: CORS_OPTIONS.credentials,
-    allowedHeaders: CORS_OPTIONS.allowedHeaders
-  }});
+  cors: CORS_OPTIONS
+});
 
 // Configuración de eventos de Socket.IO
 io.on("connection", (socket: Socket) => {

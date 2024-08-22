@@ -3,7 +3,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYwN
 ###
 
 GET http://localhost:3000/auth/refreshToken
-Cookie: jwt_session=e%3A986d5b2f083578852892f28a199d00fa%3A0b275068ccad49ecda8279ac6a9b0c7d350931a411f400bc7a243c2ec89ea0a795fd4dacffe2fd5c727b957b7592ec96f2db7cdf95f94660e6e0d925c32b04bf094b564a0c9aca4293767e9f79e67bf1d94aa547d8a460dc816f8cdfaec4b4d9168f835a2f8b3b198fd1ff43a7f0307b8e5a0cbb3dc1eb9548d65e0f7b597253bd52d982642e070c739576ee03600e3f7dd24f33f8966ca026273a9c715e494cd5fbe3c80d78e9762570c648139432104f1e677338b7e45b59c92a9a17493ff4dd4dcb34f25a8c1757f51cfde1a0a90c
+Cookie: jwt_session=e%3A404ea9eb095e77eb9f76a63c3e44b37e%3Aaaf4a9768a0519510013deb4ae9da4e9dd9410ed790a04181d89701103bb20fad07298a678d9758c4d708d8fc4fa110e49feccb0178ab6d335629487a86384895b5a5cc4b6e77b6a27459d78440c6d61717fef8c808142dc36ca26722d405915c97ccdb7040fdf2ba4445c34c68fe669e1f32f056a58fc99fc3178d42e259e05a614887b65061ded8c3afe62eab40db6e7e931df679e4707dcd82c8998d806648bbc3e46f5c116750a8f4aa3b575846f1f06a592b4c5ad051e3c3535688d5318f5383ad9d3d0d582885c6bc35afc63f3
 ###
 
 POST http://localhost:3000/auth/login
@@ -20,9 +20,9 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "username": "daniel1234542",
+    "username": "dasniel12345422",
     "client_id": "6610df679aa69f94039714ef",
-    "name": "Daniel Castilla",
-    "email": "daniel@example1235244.es",
+    "name": "Daniel Castillas",
+    "email": "daniesl@example12352443.es",
     "password": "123"
 }

@@ -1,4 +1,12 @@
 api-gateway/node_modules
 authentication/node_modules
 example/node_modules
+chat-messages/node_modules
+
+#Traspiled code to js
+api-gateway/dist
+authentication/dist
+example/dist
+chat-messages/dist
+
 

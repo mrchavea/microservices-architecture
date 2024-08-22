@@ -18,13 +18,9 @@ class UsergRPCController {
         this.handleError = (error, callback) => {
             console.log("CONTR ERR", error);
             if (error instanceof domain_1.CustomError) {
-                return callback(null, { status: { code: error.statusCode,
-                        error: error.message }
-                });
+                return callback(null, { status: { code: error.statusCode, error: error.message } });
             }
-            return callback(null, { status: { code: 500,
-                    error: 'Internal Server Error' }
-            });
+            return callback(null, { status: { code: 500, error: "Internal Server Error" } });
         };
         this.authenticateUser = (call, callback) => __awaiter(this, void 0, void 0, function* () {
             const { email, password } = call.request;
@@ -34,13 +30,14 @@ class UsergRPCController {
                     throw domain_1.CustomError.badRequest(error);
                 new domain_1.LogInUser(this.userRepository, this.tokenRepository)
                     .execute(logInUserDto)
-                    .then(tokens => callback(null, { status: { code: 200 },
+                    .then((tokens) => callback(null, {
+                    status: { code: 200 },
                     access_token: tokens.access_token.value,
                     refresh_token: tokens.refresh_token.value,
-                    access_token_expiration: tokens.access_token.expiry_time.toString(),
-                    refresh_token_expiration: tokens.refresh_token.expiry_time.toString(),
+                    access_token_expiration: tokens.access_token.expiry_time.getTime(),
+                    refresh_token_expiration: tokens.refresh_token.expiry_time.getTime()
                 }))
-                    .catch(err => this.handleError(err, callback));
+                    .catch((err) => this.handleError(err, callback));
             }
             catch (err) {
                 this.handleError(err, callback);
@@ -55,17 +52,18 @@ class UsergRPCController {
                     throw domain_1.CustomError.badRequest(error);
                 new domain_1.RegisterUser(this.userRepository, this.tokenRepository)
                     .execute(registerUserDto)
-                    .then(userAndTokens => callback(null, { status: { code: 200 },
-                    acces_token: userAndTokens.tokens.access_token.value,
-                    access_token_expiration: userAndTokens.tokens.access_token.expiry_time,
+                    .then((userAndTokens) => callback(null, {
+                    status: { code: 200 },
+                    access_token: userAndTokens.tokens.access_token.value,
+                    access_token_expiration: userAndTokens.tokens.access_token.expiry_time.getTime(),
                     refresh_token: userAndTokens.tokens.refresh_token.value,
-                    refrehs_token_expiration: userAndTokens.tokens.refresh_token.expiry_time,
+                    refresh_token_expiration: userAndTokens.tokens.refresh_token.expiry_time.getTime(),
                     name: userAndTokens.user.name,
                     email: userAndTokens.user.email,
                     username: userAndTokens.user.username,
                     id: userAndTokens.user.id
                 }))
-                    .catch(err => this.handleError(err, callback));
+                    .catch((err) => this.handleError(err, callback));
             }
             catch (err) {
                 this.handleError(err, callback);
