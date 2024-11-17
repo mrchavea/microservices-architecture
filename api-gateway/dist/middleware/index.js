@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const gRPCClient_1 = require("../gRPCClient");
+const CookieAdapter_1 = require("../src/presentation/adapters/CookieAdapter");
 function authenticateToken(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
@@ -17,14 +18,22 @@ function authenticateToken(req, res, next) {
         // Disable authentication for authentication microservice and functionalities
         if (req.path.startsWith("/auth"))
             return next();
-        const authHeader = req.headers["authorization"];
-        const token = authHeader && authHeader.split(" ")[1];
-        if (!token) {
+        // const authHeader = req.headers["authorization"];
+        // const token = authHeader && authHeader.split(" ")[1];
+        // if (!token) {
+        //   res.sendStatus(401);
+        //   return;
+        // }
+        const sessionCookie = req.cookies["jwt_session"];
+        const accessCookie = req.cookies["jwt_access"];
+        console.log("COOKIES?", sessionCookie, accessCookie);
+        if (!sessionCookie || !accessCookie) {
             res.sendStatus(401);
             return;
         }
+        const sessionToken = CookieAdapter_1.CookieAdapter.decrypt(sessionCookie);
         const validateToken = () => new Promise((resolve, reject) => {
-            gRPCClient_1.tokengRPCClient.validateToken({ token }, (err, res) => {
+            gRPCClient_1.tokengRPCClient.validateToken({ accessCookie }, (err, res) => {
                 if (err)
                     return reject(err);
                 resolve(res);

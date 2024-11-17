@@ -1,9 +1,10 @@
 GET http://localhost:3000/example/hola
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYwNWJmMjViNGMxMTAxYTExZGNiNTE2IiwibWV0aG9kIjowLCJ0eXBlIjowLCJpYXQiOjE3MTE4NDA1NTcsImV4cCI6MTcxMTg0Nzc1N30.KikTn5TvwNkTYen34T0WaqbYdSnIjksrv6p-f8qhPM0
+Cookie: jwt_access=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYxMGRmYWMwNGE3NTdkOTA5ODQ4Nzg4IiwibWV0aG9kIjowLCJ0eXBlIjowLCJpYXQiOjE3MjY1MzUwNTMsImV4cCI6MTcyNjUzODY1M30.y87O2tv742LSKn_BXW84vUjnpE_bNc1yZluFvRdrAFE
+Cookie: jwt_session=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYxMGRmYWMwNGE3NTdkOTA5ODQ4Nzg4IiwibWV0aG9kIjowLCJ0eXBlIjoxLCJpYXQiOjE3MjY1MzUwNTMsImV4cCI6MTcyNjU1NjY1M30.PwtGe9AQYwSwO_IDQVtwosakGjrNzXXc_oaUzFKt74M
 ###
 
 GET http://localhost:3000/auth/refreshToken
-Cookie: jwt_session=e%3A404ea9eb095e77eb9f76a63c3e44b37e%3Aaaf4a9768a0519510013deb4ae9da4e9dd9410ed790a04181d89701103bb20fad07298a678d9758c4d708d8fc4fa110e49feccb0178ab6d335629487a86384895b5a5cc4b6e77b6a27459d78440c6d61717fef8c808142dc36ca26722d405915c97ccdb7040fdf2ba4445c34c68fe669e1f32f056a58fc99fc3178d42e259e05a614887b65061ded8c3afe62eab40db6e7e931df679e4707dcd82c8998d806648bbc3e46f5c116750a8f4aa3b575846f1f06a592b4c5ad051e3c3535688d5318f5383ad9d3d0d582885c6bc35afc63f3
+Cookie: jwt_session=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYxMGRmYWMwNGE3NTdkOTA5ODQ4Nzg4IiwibWV0aG9kIjowLCJ0eXBlIjoxLCJpYXQiOjE3MjY1MzQ4NTcsImV4cCI6MTcyNjU1NjQ1N30.VoSB9Or_dVzcr6P_QuGmTrIw_HdHoZTj55xFneWE_G0
 ###
 
 POST http://localhost:3000/auth/login
@@ -20,9 +21,9 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "username": "dasniel12345422",
+    "username": "dasniel1234542s2",
     "client_id": "6610df679aa69f94039714ef",
     "name": "Daniel Castillas",
-    "email": "daniesl@example12352443.es",
+    "email": "daniessl@example12352443.es",
     "password": "123"
 }

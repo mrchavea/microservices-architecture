@@ -13,6 +13,7 @@ interface CookieOptions {
 
 // Función para enviar una cookie de refresco
 function addRefreshCookie(response: Response, refresh_token: string, refresh_token_expiration: string): void {
+  console.log("REFRESH TOKEN", refresh_token);
   response.cookie("jwt_session", refresh_token, {
     maxAge: getMillisecondsUntilExpiration(Number(refresh_token_expiration)),
     domain: "localhost",

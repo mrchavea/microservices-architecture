@@ -73,13 +73,10 @@ router.post("/login", async (req: Request, res: Response) => {
     console.timeEnd("login");
     console.log("TOKEN?", response);
 
-    if (response.status.code === 200) {
-      addRefreshCookie(res, response.refresh_token!, response.refresh_token_expiration!);
-      addAccessToken(res, response.access_token!, response.access_token_expiration!);
-      return res.sendStatus(200);
-    }
+    if (response.status.code != 200) return res.status(response.status.code).send({ error: response.status.error });
 
-    return res.status(response.status.code).send({ error: response.status.error });
+    addRefreshCookie(res, response.refresh_token!, response.refresh_token_expiration!);
+    return res.status(200).json({ accessToken: response.access_token });
   } catch (error) {
     console.error(error);
     return res.sendStatus(500);
@@ -98,12 +95,13 @@ router.post("/register", async (req: Request, res: Response) => {
     if (response.status.code === 200) {
       const { id, name, email, username, access_token, refresh_token, access_token_expiration, refresh_token_expiration } = response;
       addRefreshCookie(res, refresh_token!, access_token_expiration!);
-      addAccessToken(res, access_token!, refresh_token_expiration!);
+      //addAccessToken(res, access_token!, refresh_token_expiration!);
       return res.status(200).json({
         id,
         name,
         email,
-        username
+        username,
+        access_token
       });
     }
 

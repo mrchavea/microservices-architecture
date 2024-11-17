@@ -64,12 +64,10 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const response = yield authenticateUser(email, password);
         console.timeEnd("login");
         console.log("TOKEN?", response);
-        if (response.status.code === 200) {
-            (0, cookies_1.addRefreshCookie)(res, response.refresh_token, response.refresh_token_expiration);
-            (0, cookies_1.addAccessToken)(res, response.access_token, response.access_token_expiration);
-            return res.sendStatus(200);
-        }
-        return res.status(response.status.code).send({ error: response.status.error });
+        if (response.status.code != 200)
+            return res.status(response.status.code).send({ error: response.status.error });
+        (0, cookies_1.addRefreshCookie)(res, response.refresh_token, response.refresh_token_expiration);
+        return res.status(200).json({ accessToken: response.access_token });
     }
     catch (error) {
         console.error(error);
@@ -86,12 +84,13 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (response.status.code === 200) {
             const { id, name, email, username, access_token, refresh_token, access_token_expiration, refresh_token_expiration } = response;
             (0, cookies_1.addRefreshCookie)(res, refresh_token, access_token_expiration);
-            (0, cookies_1.addAccessToken)(res, access_token, refresh_token_expiration);
+            //addAccessToken(res, access_token!, refresh_token_expiration!);
             return res.status(200).json({
                 id,
                 name,
                 email,
-                username
+                username,
+                access_token
             });
         }
         return res.status(response.status.code).send({ error: response.status.error });

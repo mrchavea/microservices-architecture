@@ -4,6 +4,7 @@ exports.addRefreshCookie = addRefreshCookie;
 exports.addAccessToken = addAccessToken;
 // Función para enviar una cookie de refresco
 function addRefreshCookie(response, refresh_token, refresh_token_expiration) {
+    console.log("REFRESH TOKEN", refresh_token);
     response.cookie("jwt_session", refresh_token, {
         maxAge: getMillisecondsUntilExpiration(Number(refresh_token_expiration)),
         domain: "localhost",

@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 3000;
 const CORS_OPTIONS = {
     origin: "http://localhost:4000",
     credentials: true,
-    allowedHeaders: ["jwt_session", "jwt_access"]
+    allowedHeaders: ["jwt_session", "jwt_access", "Content-Type"]
 };
 // Configuración de la aplicación
 const app = (0, express_1.default)();
@@ -57,7 +57,7 @@ app.use(express_1.default.json());
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)(CORS_OPTIONS));
 app.use((0, cookie_parser_1.default)());
-app.use(cookieEncrypter(process.env.COOKIE_SECRET_KEY));
+//app.use(cookieEncrypter(process.env.COOKIE_SECRET_KEY as string));
 app.use(middleware_1.default);
 app.use("/auth", routes_1.default);
 app.use("/", routes_2.default);

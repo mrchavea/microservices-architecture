@@ -17,7 +17,7 @@ const gRPC_services_1 = require("./presentation/gRPC/gRPC.services");
 const PORT = process.env.PORT || 50051;
 const DB_HOST = process.env.DATABASE_HOST || "localhost";
 const DB_PORT = process.env.DATABASE_PORT || "27017";
-const DB_NAME = 'authentication';
+const DB_NAME = "authentication";
 const mongodbConnection = `mongodb://${DB_HOST}:${DB_PORT}`;
 const services = gRPC_services_1.gRPCServices.services;
 (() => {
@@ -29,14 +29,14 @@ function main() {
             //Ajv validator instance (all schemas compiled once in initialization)
             const ajvValidator = helpers_1.AjvValidator.getInstance();
             const gRPC_server = new gRPC_server_1.gRPC_Server({
-                PROTO_NAME: 'authentication',
+                PROTO_NAME: "authentication",
                 services: services,
                 PORT: Number(PORT)
             });
             //connect to database
             yield database_copy_1.MongoDatabase.connect({
                 dbName: DB_NAME,
-                mongoUrl: mongodbConnection,
+                mongoUrl: mongodbConnection
             });
             ajvValidator.start();
             gRPC_server.start();
